@@ -1,0 +1,15 @@
+<p-menubar>
+  <ng-template pTemplate="start">
+    <div [routerLink]="href" class="logo">
+      <img src="assets/icon.svg" height="40" class="mr-2">
+      <div>
+        <h1>UD {{materia}}</h1>
+        <small>{{proyecto}}</small>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="end">
+    <button #btn type="button" pButton pRipple icon="pi pi-user" (click)="menu.toggle($event)" class="p-button-rounded p-button-danger  p-button-outlined"></button>
+    <p-slideMenu #menu [model]="items" [popup]="true" ></p-slideMenu>
+  </ng-template>
+</p-menubar>

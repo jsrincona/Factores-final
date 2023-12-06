@@ -1,0 +1,92 @@
+.description{
+    display: flex;
+    align-items: center;
+}
+textarea{
+    font-size: 1rem;
+    color: #495057;
+    background: #ffffff;
+    padding: 0.5rem 0.5rem;
+    border: 1px solid #ced4da;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 3px;
+    &:enabled:hover {
+        border-color:2px solid #FFC107;
+    }
+}
+.field{
+    margin: 2px 0;
+}
+
+
+
+/* Estilos generales del diálogo */
+.p-dialog {
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Estilos para los campos de entrada */
+  .field {
+    margin-bottom: 1rem;
+  }
+  
+  label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  
+  input[type="text"],
+  textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  input[type="text"]:focus,
+  textarea:focus {
+    outline: none;
+    border-color: #4c9ed9;
+  }
+  
+  .small-error {
+    font-size: 0.8rem;
+    color: red;
+  }
+  
+  /* Estilos para el dropdown */
+  .p-dropdown {
+    width: 100%;
+  }
+  
+  /* Estilos para las opciones del dropdown */
+  .p-dropdown .p-dropdown-item {
+    padding: 0.25rem 0.5rem;
+  }
+  
+  /* Estilos para los radio buttons */
+  .field-radiobutton {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .field-radiobutton p-radioButton {
+    margin-right: 0.5rem;
+  }
+  
+  /* Estilos para el grid */
+  .formgrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  
+  /* Estilos para los botones */
+  button {
+    margin-right: 0.5rem;
+  }
+  

@@ -1,0 +1,28 @@
+.logo{
+  display: flex;
+  flex-direction: row;
+  border: 1px solid #dfdfdf;
+  padding: 4px 15px 4px 4px;
+  border-radius: 30px;
+  margin: -3px;
+  cursor: default;
+}
+
+.logo img{
+  height: 40px;
+  width: 40px;
+}
+
+.logo>div{
+  margin-left: 4px;
+  display: flex;
+  flex-direction: column;
+}
+
+.logo>div h1{
+  font-size: 22px;
+}
+.logo>div small{
+  font-size: 12px;
+  line-height: 4px;
+}

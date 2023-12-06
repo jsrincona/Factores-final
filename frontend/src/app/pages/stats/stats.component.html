@@ -1,0 +1,43 @@
+<p-tabView>
+  <p-tabPanel header="Generales">
+    <h1>Estadísticas generales</h1>
+    <div style="margin-top: 50px; margin-bottom: 50px;">
+      <div style="margin-top: 20px; margin-bottom: 20px;">
+        <strong>Valor total de las compras</strong><p>{{purchaseStatistics?.total_purchase_value}}</p>
+      </div>
+      <div style="margin-top: 20px; margin-bottom: 20px;">
+        <strong>Puntaje promedio</strong><p>{{purchaseStatistics?.average_score}}</p>
+      </div>
+      <div style="margin-top: 20px; margin-bottom: 20px;">
+        <strong>Precio promedio</strong><p>{{purchaseStatistics?.average_price | currency}}</p>
+      </div>
+      <div style="margin-top: 20px; margin-bottom: 20px;">
+        <strong>Total de asientos reservados</strong><p>{{purchaseStatistics?.total_reserved_seats}}</p>
+      </div>
+      <div style="margin-top: 20px; margin-bottom: 20px;">
+        <strong>Duración promedio</strong><p>{{purchaseStatistics?.average_duration}}</p>
+      </div>
+      <p-button label="Descargar informe" icon="pi pi-download" iconPos="right" (click)="goToPDF()"></p-button>
+    </div>
+  </p-tabPanel>
+  <p-tabPanel header="Producto Cantidad">
+    <div class="card">
+      <h2>Producto - Cantidad</h2>
+      <p-chart type="bar" [data]="productCountData" [options]="productCountOptions"></p-chart>
+    </div>
+  </p-tabPanel>
+  <p-tabPanel header="Función por película">
+    <div class="card">
+      <h2>Función por Película</h2>
+      <p-chart type="bar" [data]="movieFunctionData" [options]="movieFunctionOptions"></p-chart>
+    </div>
+  </p-tabPanel>
+  <p-tabPanel header="Compras por Cliente">
+    <div class="card">
+      <h2>Compras por Cliente</h2>
+      <p-chart type="bar" [data]="clientPurchaseData" [options]="clientPurchaseOptions"></p-chart>
+    </div>
+  </p-tabPanel>
+</p-tabView>
+
+

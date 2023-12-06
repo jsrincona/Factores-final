@@ -1,0 +1,12 @@
+<p-toast key="grl-toast"></p-toast>
+<router-outlet></router-outlet>
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+<div class="la-empresa" [ngClass]="isClicked?'la-empresa-active':''">
+  <img src="/assets/icon.png" (click)="isClicked=!isClicked" height="100%" alt="" srcset="" >
+  <div class="d-flex align-items-center" style="margin-right: 10px;">
+    <select class="form-select"  id="floatingSelect" aria-label="Floating label select example">
+      <option selected>Multiplex...</option>
+      <option *ngFor="let item of listMultiplex" (click)="saveMultiplexId(item.pk_id)">{{item.t_name}}</option>
+    </select>
+  </div>
+</div>

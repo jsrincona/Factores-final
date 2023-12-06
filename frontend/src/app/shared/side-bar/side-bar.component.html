@@ -1,0 +1,38 @@
+<div class="container">
+  <div>
+    <img [src]="'assets/icon.png'" alt="Profile image">
+    <p>{{username}}</p>
+  </div>
+  <div *ngIf="isAllowed('mi-perfil')" routerLinkActive="container-active" [routerLink]="href+'/mi-perfil'" >
+    <button pButton pRipple type="button" icon="pi pi-user" class="p-button-secondary p-button-rounded p-button-text"></button>
+    <p>Mi perfil</p>
+  </div>
+  <div *ngIf="isAllowed('usuarios')" routerLinkActive="container-active" [routerLink]="href+'/usuarios'">
+    <button pButton pRipple type="button" icon="pi pi-users" class="p-button-secondary p-button-rounded p-button-text"></button>
+    <p>Gestión usuario</p>
+  </div>
+  <div *ngIf="isAllowed('mi-cine')" routerLinkActive="container-active" [routerLink]="href+'/mi-cine'">
+    <button pButton pRipple type="button" icon="pi pi-chart-pie" class="p-button-secondary p-button-rounded p-button-text"></button>
+    <p>Mi Cinema</p>
+  </div>
+  <div *ngIf="isAllowed('mi-inventario')" routerLinkActive="container-active" [routerLink]="href+'/mi-inventario'">
+    <button pButton pRipple type="button" icon="pi pi-box" class="p-button-secondary p-button-rounded p-button-text"></button>
+    <p>Mi inventario</p>
+  </div>
+  <!-- <div *ngIf="isAllowed('mis-ventas')" routerLinkActive="container-active" [routerLink]="href+'/mis-ventas'">
+    <button pButton pRipple type="button" icon="pi pi-briefcase" class="p-button-secondary p-button-rounded p-button-text"></button>
+    <p>Mis ventas</p>
+  </div> -->
+  <div *ngIf="isAllowed('mis-compras')" routerLinkActive="container-active" [routerLink]="href+'/mis-compras/movies'">
+    <button pButton pRipple type="button" icon="pi pi-shopping-cart" class="p-button-secondary p-button-rounded p-button-text"></button>
+    <p>Mis compras</p>
+  </div>
+  <div *ngIf="isAllowed('estadisticas')" routerLinkActive="container-active" [routerLink]="href+'/estadisticas'">
+    <button pButton pRipple type="button" icon="pi pi-chart-pie" class="p-button-secondary p-button-rounded p-button-text"></button>
+    <p>Estadísticas</p>
+  </div>
+  <a [href]="server+'admin/'">
+    <button pButton pRipple type="button" icon="pi pi-cog" class="p-button-secondary p-button-rounded p-button-text"></button>
+    <p>Configuraciones avanzadas</p>
+  </a>
+</div>

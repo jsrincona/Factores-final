@@ -1,0 +1,76 @@
+<div class="container-box">
+  <div class="loginbox">
+    <a [href]="docs" target="_blank" rel="noopener noreferrer">
+      <img src="assets/icon.svg" alt="ud apps icon" id="icon">
+    </a>
+    <div>
+      <h1>Inicia sesión</h1>
+      <div class="form-input">
+        <span class="p-float-label">
+          <input [(ngModel)]="username" class="input-fix" id="float-input" type="text" pInputText > 
+          <label for="float-input">Username</label>
+        </span>
+      </div>
+      <div class="form-input">
+        <span class="p-float-label">
+          <p-password [(ngModel)]="password" class="input-fix" id="float-input" [feedback]="false"></p-password>
+          <label for="float-input">Password</label>
+        </span>
+      </div>
+      <div *ngIf="!isLogin" class="form-input">
+        <span class="p-float-label">
+          <p-password [(ngModel)]="passwordConfirmation" class="input-fix" id="float-input" [feedback]="false"></p-password>
+          <label for="float-input" [ngStyle]="{'color':passwordConfirmation==password?'':'red'}">Confirm password</label>
+        </span>
+      </div>
+      <div class="form-input-center">
+        <p-button class="button-ng" [label]="isLogin?'Iniciar sesión':'Registrarme'" (click)="isLogin?logIn():logIn()"></p-button>
+        <!-- <p-button class="button-ng" icon="pi pi-user" [label]="isLogin?'No tengo cuenta':'Volver'" styleClass="p-button-link" (click)="isLogin = !isLogin; onClear()"></p-button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="flotable">
+  <button pButton pRipple type="button" icon="pi pi-home" class="p-button-rounded" routerLink="/inicio"></button>
+</div>
+<div class="flotable-info">
+  <button pButton pRipple type="button" icon="pi pi-info" class="p-button-rounded" (click)="display=true"></button>
+</div>
+
+
+<p-sidebar [(visible)]="display" position="left" [style]="{width:'18em'}" [transitionOptions]="'4ms'">
+  <ng-template pTemplate="header">
+    <img src="assets/icon.svg" alt="ud apps icon" id="icon" align="center">
+  </ng-template>
+  <ng-template pTemplate="content">
+    <h3>Materia</h3>
+    <p>{{materia}}</p>
+    <h3>Proyecto</h3>
+    <p>{{proyecto}}</p>
+    <h3>Entregado a</h3>
+    <p>{{profesor}}</p>
+    <h3>Integrantes</h3>
+    <ul>
+      <li *ngFor="let integrante of integrantes">
+        <a [href]="integrante.url" target="_blank" rel="noopener noreferrer">{{integrante.name}} {{integrante.code}}</a>
+      </li>
+    </ul>
+    <h3>Enlaces importantes</h3>
+    <ul>
+      <li>
+        <a [href]="docs" target="_blank" rel="noopener noreferrer">Documentación</a>
+      </li>
+      <li>
+        <a [href]="repositorio" target="_blank" rel="noopener noreferrer">Repositorio</a>
+      </li>
+      <li>
+        <a [href]="cronograma" target="_blank" rel="noopener noreferrer">Cronograma</a>
+      </li>
+    </ul>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <img src="https://www.udistrital.edu.co/themes/custom/versh/images/default/preloader.png" alt="Universidad Distrital Francisco José de Caldas" width="160px">
+  </ng-template>
+</p-sidebar>

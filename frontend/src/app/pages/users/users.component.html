@@ -1,0 +1,278 @@
+<p-tabView>
+    <p-tabPanel header="Empleados">
+        <div>
+            <p-toolbar styleClass="mb-4 gap-2">
+                <ng-template pTemplate="left">
+                    <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNewEmpleado()"></button>
+                </ng-template>
+            </p-toolbar>
+        
+            <p-table
+                #dt
+                [value]="empleados"
+                [rows]="10"
+                [paginator]="true"
+                [globalFilterFields]="['name', 'country.name', 'representative.name', 'status']"
+                [tableStyle]="{ 'min-width': '75rem' }"
+                [(selection)]="selectedEmpleados"
+                [rowHover]="true"
+                dataKey="id"
+                currentPageReportTemplate="Mostrando {first} al {last} de {totalRecords} registros"
+                [showCurrentPageReport]="true"
+            >
+                <ng-template pTemplate="caption">
+                    <div class="flex align-items-center justify-content-between">
+                        <h5 class="m-0">Gestión Empleados</h5>
+                        <!-- <span class="p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
+                        </span> -->
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="name" style="min-width:15rem">Nombre <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="email">Correo electrónico <p-sortIcon field="price"></p-sortIcon></th>
+                        <th pSortableColumn="telefono" style="min-width:10rem">Teléfono <p-sortIcon field="category"></p-sortIcon></th>
+                        <th pSortableColumn="rol">Rol <p-sortIcon field="rating"></p-sortIcon></th>
+                        <th pSortableColumn="active" style="min-width:10rem">Estado<p-sortIcon field="inventoryStatus"></p-sortIcon></th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-empleado>
+                    <tr>
+                        <td>{{ empleado.name }}</td>
+                        <td>{{ empleado.email }}</td>
+                        <td>{{ empleado.n_phone }}</td>
+                        <td>{{ empleado.t_rol }}</td>
+                        <td>
+                            <p-tag [value]="empleado.is_active?'Activo':'Inactivo'" [severity]="empleado.is_active?'success':'error'"></p-tag>
+                        <td>
+                            <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editEmpleado(empleado)"></button>
+                            <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteEmpleado(empleado)"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="summary">
+                    <div class="flex align-items-center justify-content-between">En total hay {{ empleados ? empleados.length : 0 }} empleados.</div>
+                </ng-template>
+            </p-table>
+        </div>
+        <!--Registro de usuarios--> 
+        <p-dialog [(visible)]="empleadoDialog" [style]="{ width: '450px' }" header="Detalles usuario" [modal]="true" styleClass="p-fluid">
+            <ng-template pTemplate="content">
+                <div class="field">
+                    <label for="email">Email</label>
+                    <input type="text" pInputText id="email" [(ngModel)]="empleado.email" required autofocus />
+                    <small class="p-error" *ngIf="!empleado.email">El nombre de usuario (email) es requerido.</small>
+                </div>
+                <div class="field" *ngIf="isEmployeeEdited">
+                    <label for="password">Contraseña</label>
+                    <p-password [(ngModel)]="empleado.password">
+                        <ng-template pTemplate="header">
+                            <h6>Pick a password</h6>
+                        </ng-template>
+                        <ng-template pTemplate="footer">
+                            <p-divider></p-divider>
+                            <p class="mt-2">Suggestions</p>
+                            <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
+                                <li>Se necesita una letra en minúsculas</li>
+                                <li>Se necesita una letra en mayúsculas</li>
+                                <li>Se necesita un número</li>
+                                <li>Mínimo 8 caracteres</li>
+                            </ul>
+                        </ng-template>
+                    </p-password>
+                    <small class="p-error" *ngIf="!empleado.password">LA  contraseña es requerida.</small>
+                </div>
+                <hr>
+                <div class="field">
+                    <label for="documenttype">Tipo de documento</label>
+                    <!-- Acá iría CC o TI o CE -->    
+                    <select class="form-select" id="documenttype" [(ngModel)]="empleado.t_id">
+                            <option selected disabled value="null">Seleccione tipo de documento </option>
+                            <option value="1">Cédula de ciudadanía</option>
+                            <option value="2">Tarjeta de Identidad</option>
+                            <option value="3">Cédula de Extranjería </option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="name">Cédula</label> 
+                    <input type="text" pInputText id="name" [(ngModel)]="empleado.n_id" required autofocus />
+                    <small class="p-error" *ngIf="!empleado.n_id">La cédula es requerido.</small>
+                </div>
+                <div class="field">
+                    <label for="lastname">Nombre completo</label>
+                    <input type="text" pInputText id="lastname" [(ngModel)]="empleado.name" required autofocus />
+                    <small class="p-error" *ngIf="!empleado.name">El nombre completo es requerido.</small>
+                </div>
+                <div class="field">
+                    <label for="phone">Teléfono</label>
+                    <div class="p-inputgroup">
+                        <span class="p-inputgroup-addon">
+                            <i class="pi pi-phone"></i>
+                        </span>
+                        <input type="tel" pInputText id="phone" [(ngModel)]="empleado.n_phone" required autofocus />
+                    </div>
+                    <small class="p-error" *ngIf="!empleado.n_phone">El teléfono es requerida.</small>
+                </div>
+                <!-- Tipo de usuario -->
+                <div class="field">
+                    <label for="userType">Tipo de usuario</label>
+                    <select id="userType" [(ngModel)]="empleado.t_rol">
+                        <option selected disabled value="null">Seleccione tipo usuario </option>
+                        <option value="1">Administrador</option>
+                        <option value="2">Empleado</option>
+                    </select>
+                </div>
+                <!-- Campos habilitados para empleado -->
+                <div class="field">
+                    <label for="salario">Salario</label> 
+                    <input type="text" pInputText id="name" [(ngModel)]="empleado.n_salary" required autofocus />
+                    <small class="p-error" *ngIf="!empleado.n_salary">El salario es requerido.</small>
+                </div>
+                <div class="field">
+                    <label for="start_date_contract">Fecha de contratación</label>
+                    <input type="date" pInputText id="start_date_contract" [(ngModel)]="empleado.d_start_contract" required autofocus />
+                </div>
+                <div class="field">
+                    <label for="end_date_contract">Fecha de de terminación de contrato</label>
+                    <input type="date" pInputText id="start_date_contract" [(ngModel)]="empleado.d_end_contract" required autofocus />
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialogEmpleado()"></button>
+                <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="saveEmpleado()"></button>
+            </ng-template>
+        </p-dialog>
+    </p-tabPanel>
+    <p-tabPanel header="Clientes">
+        <div>
+            <p-toolbar styleClass="mb-4 gap-2">
+                <ng-template pTemplate="left">
+                    <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNewCliente()"></button>
+                </ng-template>
+            </p-toolbar>
+        
+            <p-table
+                #dt
+                [value]="clientes"
+                [rows]="10"
+                [paginator]="true"
+                [globalFilterFields]="['name', 'country.name', 'representative.name', 'status']"
+                [tableStyle]="{ 'min-width': '75rem' }"
+                [(selection)]="selectedClientes"
+                [rowHover]="true"
+                dataKey="id"
+                currentPageReportTemplate="Mostrando {first} al {last} de {totalRecords} registros"
+                [showCurrentPageReport]="true"
+            >
+                <ng-template pTemplate="caption">
+                    <div class="flex align-items-center justify-content-between">
+                        <h5 class="m-0">Gestión Empleados</h5>
+                        <!-- <span class="p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
+                        </span> -->
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="name" style="min-width:15rem">Nombre <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="email">Correo Electrónico <p-sortIcon field="price"></p-sortIcon></th>
+                        <th pSortableColumn="n_phone" style="min-width:10rem">Teléfono <p-sortIcon field="category"></p-sortIcon></th>
+                        <th pSortableColumn="n_points">Puntos<p-sortIcon field="rating"></p-sortIcon></th>
+                        <th pSortableColumn="is_active" style="min-width:10rem">Estado<p-sortIcon field="inventoryStatus"></p-sortIcon></th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-cliente>
+                    <tr>
+                        <td>{{ cliente.name }}</td>
+                        <td>{{ cliente.email }}</td>
+                        <td>{{ cliente.n_phone }}</td>
+                        <td>{{ cliente.n_points }}</td>
+                        <td>
+                            <p-tag [value]="cliente.is_active?'Activo':'Inactivo'" [severity]="cliente.is_active?'success':'error'"></p-tag>
+                        </td>
+                        <td>
+                            <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editCliente(cliente)"></button>
+                            <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteCliente(cliente)"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="summary">
+                    <div class="flex align-items-center justify-content-between">En total hay {{ clientes ? clientes.length : 0 }} clientes.</div>
+                </ng-template>
+            </p-table>
+        </div>
+        <!--Registro de usuarios--> 
+        <p-dialog [(visible)]="clienteDialog" [style]="{ width: '450px' }" header="Detalles usuario" [modal]="true" styleClass="p-fluid">
+            <ng-template pTemplate="content">
+                <div class="field">
+                    <label for="email">Email</label>
+                    <input type="text" pInputText id="email" [(ngModel)]="cliente.email" required autofocus />
+                    <small class="p-error" *ngIf="!cliente.email">El nombre de cliente (email) es requerido.</small>
+                </div>
+                <div class="field">
+                    <label for="password">Contraseña</label>
+                    <p-password [(ngModel)]="cliente.password">
+                        <ng-template pTemplate="header">
+                            <h6>Pick a password</h6>
+                        </ng-template>
+                        <ng-template pTemplate="footer">
+                            <p-divider></p-divider>
+                            <p class="mt-2">Suggestions</p>
+                            <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
+                                <li>Se necesita una letra en minúsculas</li>
+                                <li>Se necesita una letra en mayúsculas</li>
+                                <li>Se necesita un número</li>
+                                <li>Mínimo 8 caracteres</li>
+                            </ul>
+                        </ng-template>
+                    </p-password>
+                    <small class="p-error" *ngIf="!cliente.password">La contraseña es requerida.</small>
+                </div>
+                <hr>
+                <div class="field">
+                    <label for="documenttype">Tipo de documento</label>
+                    <!-- Acá iría CC o TI o CE -->    
+                    <select id="documenttype" [(ngModel)]="cliente.t_id">
+                            <option selected disabled value="null">Seleccione tipo de documento </option>
+                            <option value="1">Cédula de ciudadanía</option>
+                            <option value="2">Tarjeta de Identidad</option>
+                            <option value="3">Cédula de Extranjería </option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="name">Cédula</label> 
+                    <input type="text" pInputText id="name" [(ngModel)]="cliente.n_id" required autofocus />
+                    <small class="p-error" *ngIf="!cliente.n_id">La cédula es requerido.</small>
+                </div>
+                <div class="field">
+                    <label for="lastname">Nombre completo</label>
+                    <input type="text" pInputText id="lastname" [(ngModel)]="cliente.name" required autofocus />
+                    <small class="p-error" *ngIf="!cliente.name">El nombre completo es requerido.</small>
+                </div>
+                <div class="field">
+                    <label for="phone">Teléfono</label>
+                    <div class="p-inputgroup">
+                        <span class="p-inputgroup-addon">
+                            <i class="pi pi-phone"></i>
+                        </span>
+                        <input type="tel" pInputText id="phone" [(ngModel)]="cliente.n_phone" required autofocus />
+                    </div>
+                    <small class="p-error" *ngIf="!cliente.n_phone">El teléfono es requerida.</small>
+                </div>
+                
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialogCliente()"></button>
+                <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="saveCliente()"></button>
+            </ng-template>
+        </p-dialog>
+    </p-tabPanel>
+</p-tabView>
+<p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>

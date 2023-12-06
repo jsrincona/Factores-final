@@ -1,0 +1,23 @@
+[
+    { "nombre": "Bogotá", "codigo": "BOG" },
+    { "nombre": "Medellín", "codigo": "MDE" },
+    { "nombre": "Cali", "codigo": "CLO" },
+    { "nombre": "Barranquilla", "codigo": "BAQ" },
+    { "nombre": "Cartagena", "codigo": "CTG" },
+    { "nombre": "Bucaramanga", "codigo": "BGA" },
+    { "nombre": "Pereira", "codigo": "PEI" },
+    { "nombre": "Santa Marta", "codigo": "SMR" },
+    { "nombre": "Ibagué", "codigo": "IBE" },
+    { "nombre": "Manizales", "codigo": "MZL" },
+    { "nombre": "Villavicencio", "codigo": "VVC" },
+    { "nombre": "Neiva", "codigo": "NVA" },
+    { "nombre": "Cúcuta", "codigo": "CUC" },
+    { "nombre": "Armenia", "codigo": "AXM" },
+    { "nombre": "Pasto", "codigo": "PSO" },
+    { "nombre": "Montería", "codigo": "MTR" },
+    { "nombre": "Popayán", "codigo": "PPN" },
+    { "nombre": "Valledupar", "codigo": "VUP" },
+    { "nombre": "Tunja", "codigo": "TUN" },
+    { "nombre": "Sincelejo", "codigo": "SNC" }
+  ]
+  

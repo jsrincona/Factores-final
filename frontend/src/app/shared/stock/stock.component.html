@@ -1,0 +1,209 @@
+<p-tabView>
+  <p-tabPanel>
+    <ng-template pTemplate="header">
+      <i class="pi pi-box me-2"></i>
+      <span>Snacks</span>
+    </ng-template>
+    <div>
+      <div class="card">
+        <p-toast></p-toast>
+        <p-toolbar styleClass="mb-4 gap-2">
+            <ng-template pTemplate="left">
+                <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNewSnack()"></button>
+            </ng-template>
+        </p-toolbar>
+    
+        <p-table
+            #dt
+            [value]="snacks"
+            [rows]="10"
+            [paginator]="true"
+            [globalFilterFields]="['name', 'country.name', 'representative.name', 'status']"
+            [tableStyle]="{ 'min-width': '75rem' }"
+            [(selection)]="selectedSnacks"
+            [rowHover]="true"
+            dataKey="id"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [showCurrentPageReport]="true"
+        >
+            <ng-template pTemplate="caption">
+                <div class="flex align-items-center justify-content-between">
+                    <h5 class="m-0">Gestión snacks</h5>
+                    <!-- <span class="p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
+                    </span> -->
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="pk_id" style="min-width:15rem">ID <p-sortIcon field="pk_id"></p-sortIcon></th>
+                    <th pSortableColumn="t_name" style="min-width:15rem">Nombre <p-sortIcon field="name"></p-sortIcon></th>
+                    <th pSortableColumn="n_price">Precio <p-sortIcon field="n_price"></p-sortIcon></th>
+                    <th pSortableColumn="t_type">Tipo <p-sortIcon field="t_type"></p-sortIcon></th>
+                    <th pSortableColumn="n_stock" style="min-width:10rem">Stock <p-sortIcon field="n_stock"></p-sortIcon></th>
+                    <th></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-snack>
+                <tr>
+                    <td>{{ snack.pk_id }}</td>
+                    <td>{{ snack.t_name }}</td>
+                    <td>{{ snack.n_price | currency: 'COP' }}</td>
+                    <td>{{ snack.t_type }}</td>
+                    <td>
+                        <p-tag [value]="snack.n_stock" [severity]="getSeverity(snack.n_stock)"></p-tag>
+                    </td>
+                    <td>
+                        <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editSnack(snack)"></button>
+                        <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteSnack(snack)"></button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="summary">
+                <div class="flex align-items-center justify-content-between">En total hay {{ snacks ? snacks.length : 0 }} snacks.</div>
+            </ng-template>
+        </p-table>
+      </div>
+      <p-dialog [(visible)]="snackDialog" [style]="{ width: '450px' }" header="Product Details" [modal]="true" styleClass="p-fluid">
+        <ng-template pTemplate="content">
+            <div class="field">
+                <label for="name">Nombre</label>
+                <input type="text" pInputText id="name" [(ngModel)]="snack.t_name" required autofocus />
+                <small class="p-error" *ngIf="submittedSnack && !snack.t_name">El nombre es requerido.</small>
+            </div>
+            <div class="field">
+                <label for="description">Description</label>
+                <textarea id="description" pInputTextarea [(ngModel)]="snack.t_description" required rows="3" cols="20"></textarea>
+            </div>
+    
+            <div class="field">
+                <label class="mb-3">Tipo</label>
+                <div class="formgrid grid">
+                    <div class="field-radiobutton col-6">
+                        <p-radioButton id="category1" name="category" value="Aperitivo" [(ngModel)]="snack.t_type"></p-radioButton>
+                        <label for="category1">Aperitivo</label>
+                    </div>
+                    <div class="field-radiobutton col-6">
+                        <p-radioButton id="category2" name="category" value="Bebida" [(ngModel)]="snack.t_type"></p-radioButton>
+                        <label for="category2">Bebida</label>
+                    </div>
+                    <div class="field-radiobutton col-6">
+                        <p-radioButton id="category3" name="category" value="Plato Fuerte" [(ngModel)]="snack.t_type"></p-radioButton>
+                        <label for="category3">Plato Fuerte</label>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="formgrid grid">
+                <div class="field col">
+                    <label for="price">Precio</label>
+                    <p-inputNumber id="price" [(ngModel)]="snack.n_price" mode="currency" currency="COP" locale="es-CO"></p-inputNumber>
+                </div>
+                <div class="field col">
+                    <label for="quantity">Stock</label>
+                    <p-inputNumber id="quantity" [(ngModel)]="snack.n_stock"></p-inputNumber>
+                </div>
+            </div>
+        </ng-template>
+    
+        <ng-template pTemplate="footer">
+            <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialogSnack()"></button>
+            <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveSnack()"></button>
+        </ng-template>
+      </p-dialog>
+    </div>
+  </p-tabPanel>
+  <p-tabPanel header="Tickets">
+    <ng-template pTemplate="header">
+      <i class="pi pi-ticket me-2"></i>
+      <span>Tickets</span>
+    </ng-template>
+    <div>
+        <div class="card">
+          <p-toast></p-toast>
+          <p-toolbar styleClass="mb-4 gap-2">
+              <ng-template pTemplate="left">
+                  <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNewTicket()"></button>
+              </ng-template>
+          </p-toolbar>
+      
+          <p-table
+              #dt
+              [value]="tickets"
+              [rows]="10"
+              [paginator]="true"
+              [globalFilterFields]="['name', 'country.name', 'representative.name', 'status']"
+              [tableStyle]="{ 'min-width': '75rem' }"
+              [(selection)]="selectedTickets"
+              [rowHover]="true"
+              dataKey="id"
+              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+              [showCurrentPageReport]="true"
+          >
+              <ng-template pTemplate="caption">
+                  <div class="flex align-items-center justify-content-between">
+                      <h5 class="m-0">Gestión tickets</h5>
+                      <!-- <span class="p-input-icon-left">
+                          <i class="pi pi-search"></i>
+                          <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
+                      </span> -->
+                  </div>
+              </ng-template>
+              <ng-template pTemplate="header">
+                  <tr>
+                      <th pSortableColumn="pk_id" style="min-width:15rem">ID <p-sortIcon field="pk_id"></p-sortIcon></th>
+                      <th pSortableColumn="t_name" style="min-width:15rem">Nombre <p-sortIcon field="name"></p-sortIcon></th>
+                      <th pSortableColumn="n_price">Precio <p-sortIcon field="n_price"></p-sortIcon></th>
+                      <th pSortableColumn="d_creation">Fecha de creación<p-sortIcon field="d_creation"></p-sortIcon></th>
+                      <th pSortableColumn="b_state" style="min-width:10rem">Estado <p-sortIcon field="b_state"></p-sortIcon></th>
+                      <th></th>
+                  </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-ticket>
+                  <tr>
+                      <td>{{ ticket.pk_id }}</td>
+                      <td>{{ ticket.t_name }}</td>
+                      <td>{{ ticket.n_price | currency: 'COP' }}</td>
+                      <td>{{ ticket.d_creation | date }}</td>
+                      <td>
+                          <p-tag [value]="ticket.b_state?'Pagado':'No pagado'" [severity]="ticket.b_state?'success':'danger'"></p-tag>
+                      </td>
+                      <td>
+                          <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editTicket(ticket)"></button>
+                          <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteTicket(ticket)"></button>
+                      </td>
+                  </tr>
+              </ng-template>
+              <ng-template pTemplate="summary">
+                  <div class="flex align-items-center justify-content-between">En total hay {{ tickets ? tickets.length : 0 }} tickets.</div>
+              </ng-template>
+          </p-table>
+        </div>
+        <p-dialog [(visible)]="ticketDialog" [style]="{ width: '450px' }" header="Product Details" [modal]="true" styleClass="p-fluid">
+          <ng-template pTemplate="content">
+              <div class="field">
+                  <label for="name">Nombre</label>
+                  <input type="text" pInputText id="name" [(ngModel)]="ticket.t_name" required autofocus />
+                  <small class="p-error" *ngIf="submittedTicket && !ticket.t_name">El nombre es requerido.</small>
+              </div>
+              <div class="field">
+                  <label for="description">Description</label>
+                  <textarea id="description" pInputTextarea [(ngModel)]="ticket.t_description" required rows="3" cols="20"></textarea>
+              </div>
+              <div class="field">
+                  <label for="price">Precio</label>
+                  <p-inputNumber id="price" [(ngModel)]="ticket.n_price" mode="currency" currency="COP" locale="es-CO"></p-inputNumber>
+              </div>
+          </ng-template>
+      
+          <ng-template pTemplate="footer">
+              <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialogTicket()"></button>
+              <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveTicket()"></button>
+          </ng-template>
+        </p-dialog>
+      
+    </div>
+    </p-tabPanel>
+</p-tabView>
+<p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>

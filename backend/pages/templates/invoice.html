@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <title>Recibo de Compra</title>
+      <style>
+          body {
+              font-family: Arial, sans-serif;
+          }
+          table {
+              width: 100%;
+              border-collapse: collapse;
+          }
+          th, td {
+              border: 1px solid #000;
+              padding: 10px;
+          }
+      </style>
+  </head>
+  <body>
+      <h2>Recibo de Compra</h2>
+
+      <p>
+          Cliente: {{ purchase.fk_client.name }}<br>
+          Fecha de Compra: {{ purchase.d_creation }}
+      </p>
+
+      <table>
+          <thead>
+              <tr>
+                  <th>Producto</th>
+                  <th>Precio</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for product in purchase.fk_product.all %}
+              <tr>
+                  <td>{{ product.t_name }}</td>
+                  <td>${{ product.n_price }}</td>
+              </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+
+      <p>
+          Valor Total: ${{ purchase.n_total_value }}
+      </p>
+  </body>
+</html>

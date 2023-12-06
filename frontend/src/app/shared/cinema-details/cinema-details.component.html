@@ -1,0 +1,376 @@
+<p-tabView>
+    <p-tabPanel>
+      <ng-template pTemplate="header">
+        <i class="pi pi-box me-2"></i>
+        <span>Movie</span>
+      </ng-template>
+      <div>
+        <div class="card">
+          <p-toast></p-toast>
+          <p-toolbar styleClass="mb-4 gap-2">
+              <ng-template pTemplate="left">
+                  <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNewMovie()"></button>
+              </ng-template>
+          </p-toolbar>
+      
+          <p-table
+              #dt
+              [value]="movies"
+              [rows]="10"
+              [paginator]="true"
+              [globalFilterFields]="['name', 'country.name', 'representative.name', 'status']"
+              [tableStyle]="{ 'min-width': '75rem' }"
+              [(selection)]="selectedMovies"
+              [rowHover]="true"
+              dataKey="id"
+              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+              [showCurrentPageReport]="true"
+          >
+              <ng-template pTemplate="caption">
+                  <div class="flex align-items-center justify-content-between">
+                      <h5 class="m-0">Gestión movies</h5>
+                      <!-- <span class="p-input-icon-left">
+                          <i class="pi pi-search"></i>
+                          <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
+                      </span> -->
+                  </div>
+              </ng-template>
+              <ng-template pTemplate="header">
+                  <tr>
+                      <th pSortableColumn="pk_id" style="min-width:15rem">ID <p-sortIcon field="pk_id"></p-sortIcon></th>
+                      <th pSortableColumn="t_title" style="min-width:15rem">Titulo <p-sortIcon field="name"></p-sortIcon></th>
+                      <th pSortableColumn="n_rating">Rating <p-sortIcon field="n_price"></p-sortIcon></th>
+                      <th pSortableColumn="n_duration">Duración <p-sortIcon field="t_type"></p-sortIcon></th>
+                      <th></th>
+                  </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-movie>
+                  <tr>
+                      <td>{{ movie.pk_id }}</td>
+                      <td>{{ movie.t_title }}</td>
+                      <td>
+                        <p-rating [(ngModel)]="movie.n_rating" [readonly]="true" [cancel]="false"></p-rating>
+                      </td>
+                      <td>{{ movie.n_duration }}</td>
+                      <td>
+                          <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editMovie(movie)"></button>
+                          <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteMovie(movie)"></button>
+                      </td>
+                  </tr>
+              </ng-template>
+              <ng-template pTemplate="summary">
+                  <div class="flex align-items-center justify-content-between">En total hay {{ movies ? movies.length : 0 }} movies.</div>
+              </ng-template>
+          </p-table>
+        </div>
+        <p-dialog [(visible)]="movieDialog" [style]="{ width: '450px' }" header="Product Details" [modal]="true" styleClass="p-fluid">
+          <ng-template pTemplate="content">
+              <div class="field">
+                  <label for="name">Titulo</label>
+                  <input type="text" pInputText id="name" [(ngModel)]="movie.t_title" required autofocus />
+                  <small class="p-error" *ngIf="submittedMovie && !movie.t_title">El titulo es requerido.</small>
+              </div>
+              <div class="field">
+                  <label for="description">Description</label>
+                  <textarea id="description" pInputTextarea [(ngModel)]="movie.t_description" required rows="3" cols="20"></textarea>
+              </div>
+      
+              <div class="field">
+                  <label class="mb-3">Genero</label>
+                  <div class="formgrid grid">
+                      <div class="field-radiobutton col-6">
+                          <p-radioButton id="category1" name="category" value="Acción" [(ngModel)]="movie.t_genre"></p-radioButton>
+                          <label for="category1">Acción</label>
+                      </div>
+                      <div class="field-radiobutton col-6">
+                          <p-radioButton id="category2" name="category" value="Terror" [(ngModel)]="movie.t_genre"></p-radioButton>
+                          <label for="category2">Terror</label>
+                      </div>
+                      <div class="field-radiobutton col-6">
+                          <p-radioButton id="category3" name="category" value="Aventuras" [(ngModel)]="movie.t_genre"></p-radioButton>
+                          <label for="category3">Aventuras</label>
+                      </div>
+                  </div>
+              </div>
+              <div class="field">
+                  <label for="quantity">Duración</label>
+                  <p-inputNumber id="quantity" [(ngModel)]="movie.n_duration" placeholder="minutos"></p-inputNumber>
+              </div>
+              <div class="field">
+                <label for="rating">Rating</label>
+                <p-rating id="rating" [(ngModel)]="movie.n_rating" [readonly]="false"></p-rating>
+            </div>
+              
+          </ng-template>
+      
+          <ng-template pTemplate="footer">
+              <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialogMovie()"></button>
+              <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveMovie()"></button>
+          </ng-template>
+        </p-dialog>
+      </div>
+      <p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
+    </p-tabPanel>
+    <p-tabPanel header="shows">
+      <ng-template pTemplate="header">
+        <i class="pi pi-show me-2"></i>
+        <span>shows</span>
+      </ng-template>
+      <div>
+          <div class="card">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4 gap-2">
+                <ng-template pTemplate="left">
+                    <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNewMovie()"></button>
+                </ng-template>
+            </p-toolbar>
+        
+            <p-table
+                #dt
+                [value]="shows"
+                [rows]="10"
+                [paginator]="true"
+                [globalFilterFields]="['name', 'country.name', 'representative.name', 'status']"
+                [tableStyle]="{ 'min-width': '75rem' }"
+                [(selection)]="selectedShows"
+                [rowHover]="true"
+                dataKey="id"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [showCurrentPageReport]="true"
+            >
+                <ng-template pTemplate="caption">
+                    <div class="flex align-items-center justify-content-between">
+                        <h5 class="m-0">Gestión shows</h5>
+                        <!-- <span class="p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
+                        </span> -->
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="d_date" style="min-width:15rem">Fecha <p-sortIcon field="d_date"></p-sortIcon></th>
+                        <th pSortableColumn="d_start_time" style="min-width:15rem">Hora de inicio<p-sortIcon field="d_start_time "></p-sortIcon></th>
+                        <th pSortableColumn="d_end_time">Hora de finalización <p-sortIcon field="d_end_time"></p-sortIcon></th>
+                        <th pSortableColumn="fk_movie" style="min-width:10rem">Película<p-sortIcon field="fk_movie"></p-sortIcon></th>
+                        <th pSortableColumn="fk_theater" style="min-width:10rem">Teatro<p-sortIcon field="fk_theater"></p-sortIcon></th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-show>
+                    <tr>
+
+                        <td>{{ show.d_date | date }}</td>
+                        <td>{{ show.d_start_time }}</td>
+                        <td>{{ show.d_end_time }}</td>
+                        <td>{{ show.fk_movie }}</td>
+                        <td>{{ show.fk_theater }}</td>
+                        <td>
+                            <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editShow(show)"></button>
+                            <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteShow(show)"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="summary">
+                    <div class="flex align-items-center justify-content-between">En total hay {{ shows ? shows.length : 0 }} shows.</div>
+                </ng-template>
+            </p-table>
+          </div>
+          <p-dialog [(visible)]="showDialog" [style]="{ width: '450px' }" header="Product Details" [modal]="true" styleClass="p-fluid">
+            <ng-template pTemplate="content">
+                
+                <div class="field">
+                    <label for="start_date_contract">Fecha</label>
+                    <input type="date" pInputText id="start_date_contract" [(ngModel)]="show.d_date" required autofocus />
+                </div>
+
+                <div class="field">
+                    <label for="quantity">Hora de inicio</label>
+                    <input type="text" id="quantity" [(ngModel)]="show.d_end_time" placeholder="minutos">
+                </div>
+
+                <div class="field">
+                    <label for="quantity">Hora de finalización</label>
+                    <input type="text" id="quantity" [(ngModel)]="show.d_start_time" placeholder="minutos">
+                </div>
+                
+                <div class="field">
+                    <label for="description">Película</label>
+                    
+                </div>
+                <div class="field">
+                    <label for="price">Teatro</label>
+                    
+                </div>
+            </ng-template>
+        
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialogShow()"></button>
+                <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveShow()"></button>
+            </ng-template>
+          </p-dialog>
+        
+      </div>
+      <p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
+      </p-tabPanel>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <p-tabPanel header="Cinema">
+        <ng-template pTemplate="header">
+          <i class="pi pi-ticket me-2"></i>
+          <span>Cinema</span>
+        </ng-template>
+        <div>
+            <div class="card">
+              <p-toast></p-toast>
+              <p-toolbar styleClass="mb-4 gap-2">
+                  <ng-template pTemplate="left">
+                      <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNewMovie()"></button>
+                  </ng-template>
+              </p-toolbar>
+          
+              <p-table
+                  #dt
+                  [value]="halls"
+                  [rows]="10"
+                  [paginator]="true"
+                  [globalFilterFields]="['name', 'country.name', 'representative.name', 'status']"
+                  [tableStyle]="{ 'min-width': '75rem' }"
+                  [(selection)]="selectedHalls"
+                  [rowHover]="true"
+                  dataKey="id"
+                  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                  [showCurrentPageReport]="true"
+              >
+                  <ng-template pTemplate="caption">
+                      <div class="flex align-items-center justify-content-between">
+                          <h5 class="m-0">Gestión Salas</h5>
+                          <!-- <span class="p-input-icon-left">
+                              <i class="pi pi-search"></i>
+                              <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
+                          </span> -->
+                      </div>
+                  </ng-template>
+                  <ng-template pTemplate="header">
+                      <tr>
+                        <th pSortableColumn="pk_id" style="min-width:15rem"> ID <p-sortIcon field="pk_id"></p-sortIcon></th>  
+                        <th pSortableColumn="b_state" style="min-width:10rem">Estado<p-sortIcon field="b_state"></p-sortIcon></th>
+                        <th pSortableColumn="fk_theater" style="min-width:10rem">Teatro<p-sortIcon field="fk_theater"></p-sortIcon></th>
+                        <th></th>
+                        
+                      </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-hall>
+                      <tr>
+  
+                          <td>{{ hall.pk_id }}</td>
+                          <td>{{ hall.b_state }}</td>
+                          <td>{{ hall.fk_theater}}</td>
+                          <td>
+                              <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editHall(hall)"></button>
+                              <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteHall(hall)"></button>
+                          </td>
+                      </tr>
+                  </ng-template>
+                  <ng-template pTemplate="summary">
+                      <div class="flex align-items-center justify-content-between">En total hay {{ halls ? halls.length : 0 }} halls.</div>
+                  </ng-template>
+              </p-table>
+            </div>
+            <p-dialog [(visible)]="hallDialog" [style]="{ width: '450px' }" header="Product Details" [modal]="true" styleClass="p-fluid">
+              <ng-template pTemplate="content">
+                  
+  
+                  <div class="field">
+                      <label for="quantity">ID</label>
+                      <input type="text" id="quantity" [(ngModel)]="hall.pk_id" placeholder="minutos">
+                  </div>
+  
+                  <div class="field">
+                      <label for="quantity">Estado</label>
+                      <input type="text" id="quantity" [(ngModel)]="hall.b_state" placeholder="minutos">
+                  </div>
+                  
+                  <div class="field">
+                      <label for="price">Teatro</label>
+                      
+                  </div>
+              </ng-template>
+          
+              <ng-template pTemplate="footer">
+                  <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialogHall()"></button>
+                  <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveHall()"></button>
+              </ng-template>
+            </p-dialog>
+          
+        </div>
+          <p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
+
+        </p-tabPanel>
+  </p-tabView>

@@ -1,0 +1,60 @@
+class Booking {
+  seats: Seat[];
+  show: Show;
+  hall:Hall;
+  snacks: Snack[];
+  movie: Movie;
+  paymentInformation: {
+    cardholderName: string;
+    cardholderNumber: string;
+    date: string;
+    cvv: string;
+    remember: boolean;
+  };
+}
+
+export class Seat {
+  pk_id: number;
+  t_type: string;
+  b_state: boolean;
+  fk_ticket: any;
+  fk_hall: number;
+  row?:number;
+  column?:number;
+}
+
+export class Hall {
+  pk_id: number;
+  b_state: boolean;
+  fk_theater: number;
+}
+
+export class Show {
+  pk_id: number;
+  d_date: string;
+  d_start_time: string;
+  d_end_time: string;
+  fk_movie: number;
+  fk_theater: number;
+}
+
+export class Movie{
+  pk_id : number;
+  t_genre : string;
+  t_description : string;
+  t_title : string;
+  n_duration : number;
+  n_rating : number;
+}
+
+export class Product {
+  pk_id : number;
+  t_name : string;
+  t_description : string;
+  n_price : number;
+}
+
+export class Snack extends Product {
+  n_stock : number;
+  t_type : string;
+}

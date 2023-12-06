@@ -1,0 +1,41 @@
+<div class="container-box-profile">
+  <div class="profile-img">
+      <img src="/assets/icon.png" alt="imagen de perfil" srcset="">
+      <h4 class="text-center">{{username}}</h4>
+      <h5 class="text-center">{{user?.role}}</h5>
+  </div>
+  <div class="scrollable">
+    <div class="profile-info">
+      <div class="profile-info-title">
+        <h5> Datos personales</h5> 
+        <!-- <p-button icon="pi pi-pencil" label="Editar" (click)="editUsuario();isEdited = !isEdited"></p-button> -->
+      </div>
+      <div class="profile-info-form">
+        <div>
+          <p><strong>Email:</strong>
+            <p-skeleton *ngIf="!user?.email" width="10rem" styleClass="mb-2"></p-skeleton>
+            <span *ngIf="!isEdited && user?.email"> {{user?.email}} </span></p>
+            <!-- <input [(ngModel)]="user.email" type="email" pInputText *ngIf="isEdited"/> -->
+        </div>
+        <div>
+          <p><strong>Nombre de usuario:</strong>
+            <p-skeleton *ngIf="!user?.username" width="10rem" styleClass="mb-2"></p-skeleton>
+            <span *ngIf="!isEdited && user?.username"> {{user?.username}} </span></p>
+            <!-- <input [(ngModel)]="user.username" type="text" pInputText *ngIf="isEdited"/> -->
+        </div>
+        <div class="rep-change">
+          <p><strong>Rol:</strong>
+            <p-skeleton *ngIf="!user?.role" width="10rem" styleClass="mb-2"></p-skeleton>
+            <span> {{user?.role ? user?.role: 'No registra'}} </span></p>
+        </div>
+        <div style="display:flex; justify-content: space-around; width: 100%; padding: 30px;">
+          <p-button icon="pi pi-save" label="Guardar" *ngIf="isEdited" (click)="saveUser()"></p-button>
+          <!-- <p-button icon="pi pi-times" label="Eliminar cuenta" (click)="deleteUser()"></p-button> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p-dialog header="Eliminar cuenta" [(visible)]="isDeleteUser" [style]="{width: '50vw'}">
+  <h4>Esta función no está habilitada</h4>
+</p-dialog>

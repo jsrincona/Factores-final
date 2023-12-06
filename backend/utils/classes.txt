@@ -1,0 +1,89 @@
+class Employee(User):
+  n_salary = models.DecimalField(max_digits=10, decimal_places=2, default=1000000)
+  d_start_contract = models.DateTimeField(blank=True,default=timezone.now)
+  d_end_contract = models.DateTimeField(blank=True,null=True)
+  fk_cinema = models.ForeignKey(Cinema, on_delete=models.CASCADE, null=True)
+
+class Customer(User):
+  n_points = models.IntegerField(blank=True,default=0)
+
+class User(AbstractBaseUser, PermissionsMixin):
+
+  n_id = models.IntegerField(default=0)
+  t_id = models.IntegerField(choices=TypeIdentificationChoices.choices, default=TypeIdentificationChoices.CEDULA)
+  n_phone = models.IntegerField(null=True)
+  t_rol = models.IntegerField(default=RoleChoices.CLIENT, choices=RoleChoices.choices)
+
+  email = models.EmailField(blank=True, help_text='Correo electrónico', unique=True)
+  name = models.CharField(max_length=255, blank=True, help_text='Nombre del usuario', default='')
+  
+  is_active = models.BooleanField(default=True)
+  is_superuser = models.BooleanField(default=False)
+  is_staff = models.BooleanField(default=False)
+
+  date_joined = models.DateTimeField(default=timezone.now)
+  last_login = models.DateTimeField(blank=True, null=True)
+
+class Cinema(models.Model):
+  pk_id = models.AutoField(primary_key=True)
+  t_direction = models.CharField(max_length=30,verbose_name='Dirección del cinema', blank="")
+  t_name = models.CharField(max_length=255, verbose_name="Nombre del cinema")
+
+class Function(models.Model):
+  pk_id = models.AutoField(primary_key=True)
+  d_date = models.DateField()
+  d_start_time = models.TimeField()
+  d_end_time = models.TimeField()
+  fk_movie = models.ForeignKey(Movies, on_delete=models.CASCADE)
+  fk_hall = models.ForeignKey(Hall, on_delete=models.CASCADE, null=True)
+
+class Hall(models.Model):
+  pk_id = models.AutoField(primary_key=True)
+  b_state = models.BooleanField(default=False)
+  fk_theater = models.ForeignKey(Theater, null=True, on_delete=models.CASCADE)
+
+class Movies(models.Model):
+  pk_id      = models.AutoField(primary_key=True)
+  t_genre    = models.CharField(max_length=30,verbose_name='Genero', blank="")
+  n_rating   = models.IntegerField(verbose_name='Valoración')
+  t_description = models.CharField(max_length=500,verbose_name="Descripción",blank='')
+  t_title    = models.CharField(max_length=30,verbose_name='Titulo', blank="")
+  n_duration   = models.IntegerField(verbose_name='Duración')
+
+class Product (models.Model):
+  pk_id = models.AutoField(primary_key=True)
+  t_name = models.CharField(max_length=100, default="Juferoga :v")
+  t_description = models.CharField(max_length=255, blank=True, null=True)
+  n_price = models.DecimalField(max_digits=50,decimal_places=2, default=20000)
+
+class Snack (Product):
+  n_stock = models.PositiveIntegerField(default=0)
+  t_type = models.CharField(max_length=255)
+
+class Ticket (Product):
+  d_creation = models.DateTimeField(auto_now_add=True)
+  b_state = models.BooleanField(default=False)
+
+class Purchase(models.Model):
+  pk_id = models.AutoField(primary_key=True)
+  n_total_value = models.PositiveIntegerField(default=0)
+  n_score = models.PositiveSmallIntegerField(default=5, validators=[
+      MinValueValidator(0),
+      MaxValueValidator(100)
+    ]
+  )
+  d_creation = models.DateTimeField(default=timezone.now)
+  fk_client = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+  fk_product = models.ManyToManyField(Product, related_name="producto_pedido")
+
+class Seat(models.Model):
+  pk_id = models.AutoField(primary_key=True)
+  t_type = models.CharField(max_length=255)
+  b_state = models.BooleanField(default=False)
+  fk_ticket = models.ForeignKey(Ticket, null=True, on_delete=models.CASCADE)
+  fk_hall = models.ForeignKey(Hall, null=True, on_delete=models.CASCADE)
+
+class Theater (models.Model):
+  pk_id = models.AutoField(primary_key=True)
+  b_state = models.BooleanField(default=True)
+  fk_cinema = models.ForeignKey(Cinema, on_delete=models.CASCADE, null=True)

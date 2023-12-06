@@ -1,0 +1,19 @@
+.movie-card {
+  background-color: blue;
+  min-width: 13rem;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  &-image {
+    min-width: 10rem;
+    justify-self: center;
+  }
+  &-info-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+  }
+}
